@@ -1,61 +1,57 @@
-// Every tuning number and colour in one place. The playfield is a fixed 1280x720 logical area;
-// the renderer scales it to the window, so no rule below depends on the screen size.
+// Leonida Nights — tuning constants shared by every system of the game.
+// All distances are in world pixels, all times in seconds, all money in dollars.
+export const GRID = 10; // blocks per side of the city
+export const BLOCK = 420; // size of one city block, in pixels
+export const ROAD = 96; // width of every street, in pixels
+export const CELL = BLOCK + ROAD; // block + street, the city grid pitch
+export const WORLD = GRID * CELL + ROAD; // full city width/height, in pixels
+export const STEP = 1 / 60; // fixed simulation step
 
-export const FIELD = { width: 1280, height: 720, groundY: 664 };
+export const SAVE_KEY = 'leonida-nights-save-v1';
 
-/** The simulation's fixed step, in seconds: 60 updates a second whatever the display's rate. */
-export const STEP = 1 / 60;
+export const PLAYER_RADIUS = 14;
+export const WALK_SPEED = 205;
+export const SPRINT_SPEED = 315;
+export const PLAYER_HEALTH = 100;
+export const PISTOL_DAMAGE = 34;
+export const PISTOL_RATE = 0.16; // seconds between shots
+export const PISTOL_RANGE = 520;
 
-export const PLAYER = {
-  width: 72,
-  height: 24,
-  speed: 560,
-  invulnerable: 1.5,
-};
+export const CAR_LENGTH = 56;
+export const CAR_WIDTH = 27;
+export const CAR_RADIUS = 26; // collision circle radius for a car
 
-export const LIVES = 3;
+export const WANTED_MAX = 5;
+export const HEAT_PER_STAR = [0, 40, 120, 200, 300, 400]; // heat thresholds for stars 0..5
+export const HEAT_MAX = 500;
 
-export const BLOCK = {
-  minWidth: 40,
-  maxWidth: 110,
-  height: 36,
-  speed: 240,
-  speedPerLevel: 30,
-  speedJitter: 90,
-  interval: 0.55,
-  intervalScale: 0.88,
-  minInterval: 0.14,
-  dodgePoints: 1,
-};
+export const TRAFFIC_TARGET = 14; // traffic cars kept near the player
+export const PED_TARGET = 18; // pedestrians kept near the player
+export const SPAWN_RADIUS = 900; // cars and peds appear inside this radius
+export const DESPAWN_RADIUS = 1300; // and vanish beyond this one
 
-export const COIN = {
-  size: 24,
-  speed: 190,
-  speedPerLevel: 14,
-  interval: 1.4,
-  intervalJitter: 0.8,
-  points: 10,
-};
+export const DAY_LENGTH = 360; // real seconds for one full in-game day
+export const DAY_START = 10.5; // the story opens at 10:30 in the morning
 
-/** Seconds of play per level, and the last level: speeds and spawn rates stop growing there. */
-export const LEVEL = { seconds: 12, max: 12 };
+// Prices at the city's shops.
+export const PRICE_AMMO = 30;
+export const AMMO_PACK = 60;
+export const PRICE_HEAL = 40;
+export const PRICE_REPAIR = 25;
 
-/** How many falling things can exist at once; the pool is allocated once, at boot. */
-export const POOL_SIZE = 64;
+// Centre of the road with index i (roads run 0..GRID on both axes).
+export function roadCenter(i) {
+  return i * CELL + ROAD / 2;
+}
 
-export const PALETTE = {
-  backdrop: '#11141b',
-  sky: '#1b1f2a',
-  ground: '#2a3040',
-  player: '#4fc3f7',
-  block: '#e5534b',
-  coin: '#f2c94c',
-  panel: '#252b38',
-  text: '#eef1f5',
-  muted: '#8b93a3',
-};
+// True when the point sits on a street (rather than inside a block).
+export function isOnRoad(x, y) {
+  const mx = ((x % CELL) + CELL) % CELL;
+  const my = ((y % CELL) + CELL) % CELL;
+  return mx < ROAD || my < ROAD;
+}
 
-export const FONT = 'system-ui, -apple-system, "Segoe UI", sans-serif';
-
-/** Where the best score is kept between visits (this browser only). */
-export const BEST_KEY = 'block-dodger.best';
+// Centre of the block at column i, row j.
+export function blockCenter(i, j) {
+  return { x: i * CELL + ROAD + BLOCK / 2, y: j * CELL + ROAD + BLOCK / 2 };
+}
